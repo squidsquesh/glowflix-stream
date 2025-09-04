@@ -4,6 +4,7 @@ import { Search, Filter, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import MoviePoster3D from '@/components/3d/MoviePoster3D';
+import CreateRoomModal from '@/components/modals/CreateRoomModal';
 
 // Import posters
 import poster1 from '@/assets/poster-1.jpg';
@@ -26,6 +27,8 @@ const movies = [
 export default function Movies() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGenre, setSelectedGenre] = useState('All');
+  const [isCreateRoomOpen, setIsCreateRoomOpen] = useState(false);
+  const [selectedMovie, setSelectedMovie] = useState<typeof movies[0] | null>(null);
 
   const genres = ['All', 'Action', 'Sci-Fi', 'Fantasy', 'Drama', 'Adventure'];
   
@@ -36,8 +39,11 @@ export default function Movies() {
   });
 
   const createRoom = (movieId: number) => {
-    // Navigate to movie room creation
-    console.log('Creating room for movie:', movieId);
+    const movie = movies.find(m => m.id === movieId);
+    if (movie) {
+      setSelectedMovie(movie);
+      setIsCreateRoomOpen(true);
+    }
   };
 
   return (
@@ -169,6 +175,19 @@ export default function Movies() {
           </motion.div>
         )}
       </div>
+
+      {/* Create Room Modal */}
+      {selectedMovie && (
+        <CreateRoomModal
+          isOpen={isCreateRoomOpen}
+          onClose={() => {
+            setIsCreateRoomOpen(false);
+            setSelectedMovie(null);
+          }}
+          movieTitle={selectedMovie.title}
+          movieId={selectedMovie.id}
+        />
+      )}
     </div>
   );
 }

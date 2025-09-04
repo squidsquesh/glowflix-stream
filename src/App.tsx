@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import BottomNavigation from "@/components/layout/BottomNavigation";
 import Index from "./pages/Index";
 import Movies from "./pages/Movies";
+import Room from "./pages/Room";
 import Search from "./pages/Search";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
@@ -24,6 +25,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/movies" element={<Movies />} />
+            <Route path="/room/:roomId" element={<Room />} />
             <Route path="/search" element={<Search />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/profile" element={<Profile />} />
