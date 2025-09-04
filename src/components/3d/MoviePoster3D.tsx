@@ -4,12 +4,13 @@ import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 
 interface PosterMeshProps {
-  texture: THREE.Texture;
+  posterUrl: string;
   isHovered: boolean;
 }
 
-function PosterMesh({ texture, isHovered }: PosterMeshProps) {
+function PosterMesh({ posterUrl, isHovered }: PosterMeshProps) {
   const meshRef = useRef<THREE.Mesh>(null);
+  const texture = useTexture(posterUrl);
 
   useFrame((state) => {
     if (meshRef.current) {
@@ -39,7 +40,6 @@ interface MoviePoster3DProps {
 
 export default function MoviePoster3D({ posterUrl, className, onClick }: MoviePoster3DProps) {
   const [isHovered, setIsHovered] = useState(false);
-  const texture = useTexture(posterUrl);
 
   return (
     <div 
@@ -52,7 +52,7 @@ export default function MoviePoster3D({ posterUrl, className, onClick }: MoviePo
         <ambientLight intensity={0.4} />
         <pointLight position={[10, 10, 10]} intensity={0.8} color="#ffd700" />
         <pointLight position={[-10, -10, -10]} intensity={0.3} />
-        <PosterMesh texture={texture} isHovered={isHovered} />
+        <PosterMesh posterUrl={posterUrl} isHovered={isHovered} />
       </Canvas>
       
       {/* Golden glow effect overlay */}
