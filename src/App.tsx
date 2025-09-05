@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import BottomNavigation from "@/components/layout/BottomNavigation";
+import TopNavigation from "@/components/layout/TopNavigation";
 import Index from "./pages/Index";
 import Movies from "./pages/Movies";
 import Room from "./pages/Room";
@@ -24,6 +25,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <div className="relative min-h-screen bg-background">
+          <TopNavigation />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/movies" element={<Movies />} />

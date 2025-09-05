@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
-import { Camera, Edit, Settings, Calendar, Clock, Film } from 'lucide-react';
+import { Camera, Edit, Settings, Calendar, Clock, Film, LogIn, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Link } from 'react-router-dom';
 
 const recentActivity = [
   { id: 1, action: 'Watched', movie: 'Nexus Dawn', time: '2 hours ago' },
@@ -18,6 +19,50 @@ const favoriteMovies = [
 ];
 
 export default function Profile() {
+  // Simulate authentication state - in real app this would come from auth context
+  const isAuthenticated = false;
+
+  // If not authenticated, show login/signup options
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+        <div className="w-full max-w-md">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-8"
+          >
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent mb-2">
+              Welcome to Cinema Together
+            </h1>
+            <p className="text-muted-foreground">Sign in or create an account to access your profile</p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="space-y-4"
+          >
+            <Button asChild variant="hero" size="lg" className="w-full">
+              <Link to="/login">
+                <LogIn className="w-5 h-5 mr-2" />
+                Sign In
+              </Link>
+            </Button>
+            
+            <Button asChild variant="outline" size="lg" className="w-full">
+              <Link to="/signup">
+                <UserPlus className="w-5 h-5 mr-2" />
+                Create Account
+              </Link>
+            </Button>
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background pt-6 pb-20">
       <div className="container mx-auto px-6">
