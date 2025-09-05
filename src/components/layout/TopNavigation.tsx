@@ -17,6 +17,13 @@ export default function TopNavigation() {
             </h1>
           </Link>
 
+          {/* Navigation Links */}
+          <div className="hidden md:flex items-center gap-6">
+            <Link to="/pricing" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+              Pricing
+            </Link>
+          </div>
+
           {/* Auth Buttons */}
           {!isAuthenticated && (
             <div className="flex items-center gap-3">
