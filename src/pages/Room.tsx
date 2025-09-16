@@ -71,6 +71,18 @@ export default function Room() {
     }
   };
 
+  const toggleFullscreen = () => {
+    if (videoRef.current) {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        videoRef.current.requestFullscreen().catch(err => {
+          console.error(`Error attempting to enable fullscreen: ${err.message}`);
+        });
+      }
+    }
+  };
+
   const handleTimeUpdate = () => {
     if (videoRef.current) {
       setCurrentTime(videoRef.current.currentTime);
@@ -205,6 +217,7 @@ export default function Room() {
                 <Button
                   variant="ghost"
                   size="icon"
+                  onClick={toggleFullscreen}
                   className="text-white hover:bg-white/20"
                 >
                   <Maximize className="w-5 h-5" />
@@ -364,6 +377,7 @@ export default function Room() {
               <Button
                 variant="ghost"
                 size="icon"
+                onClick={toggleFullscreen}
                 className="text-white hover:bg-white/20 h-8 w-8"
               >
                 <Maximize className="w-4 h-4" />
