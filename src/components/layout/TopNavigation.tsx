@@ -21,8 +21,8 @@ export default function TopNavigation() {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-lg border-b border-border/50">
       <div className="container mx-auto px-4 sm:px-6 py-4">
         <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 flex-shrink-0">
+          {/* Logo - Hidden on mobile */}
+          <Link to="/" className="hidden sm:flex items-center gap-2 flex-shrink-0">
             <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
               Cinema Together
             </h1>
@@ -54,8 +54,8 @@ export default function TopNavigation() {
             </Link>
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="lg:hidden">
+          {/* Mobile Menu Button - Always visible on mobile */}
+          <div className="sm:hidden w-full flex justify-center">
             <Button
               variant="ghost"
               size="sm"
@@ -66,7 +66,7 @@ export default function TopNavigation() {
             </Button>
           </div>
 
-          {/* Desktop Auth Buttons */}
+          {/* Desktop Auth Buttons - Hidden on mobile */}
           {!isAuthenticated && (
             <div className="hidden sm:flex items-center gap-3 flex-shrink-0">
               <Button asChild variant="ghost" size="sm">
