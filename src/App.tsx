@@ -26,6 +26,7 @@ const App = () => (
       <BrowserRouter>
         <div className="relative min-h-screen bg-background">
           <TopNavigation />
+          <div className="pt-16"> {/* Add padding to prevent content hiding behind header */}
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/movies" element={<Movies />} />
@@ -39,7 +40,7 @@ const App = () => (
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
-          
+          </div>
         </div>
       </BrowserRouter>
     </TooltipProvider>

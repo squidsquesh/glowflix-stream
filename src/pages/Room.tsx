@@ -151,7 +151,8 @@ export default function Room() {
         </div>
       </div>
 
-      <div className="flex h-[calc(100vh-80px)]">
+      {/* Desktop Layout */}
+      <div className="hidden md:flex h-[calc(100vh-80px)]">
         {/* Video Player Section */}
         <motion.div 
           style={{ width: `${playerWidth}%` }}
@@ -307,6 +308,134 @@ export default function Room() {
               />
               <Button onClick={sendMessage} size="icon" variant="default">
                 <Send className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Layout */}
+      <div className="md:hidden flex flex-col h-[calc(100vh-80px)]">
+        {/* Upper Section - Video Player */}
+        <div className="bg-black relative h-1/2">
+          <video
+            ref={videoRef}
+            src={roomData.movieUrl}
+            className="w-full h-full object-contain"
+            onTimeUpdate={handleTimeUpdate}
+            onLoadedMetadata={handleLoadedMetadata}
+            onClick={togglePlay}
+          />
+          
+          {/* Video Controls Overlay */}
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
+            <div className="flex items-center gap-2 mb-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={togglePlay}
+                className="text-white hover:bg-white/20 h-8 w-8"
+              >
+                {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+              </Button>
+              
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleMute}
+                className="text-white hover:bg-white/20 h-8 w-8"
+              >
+                {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+              </Button>
+              
+              <div className="flex-1 flex items-center gap-2 text-white text-xs">
+                <span>{formatTime(currentTime)}</span>
+                <input
+                  type="range"
+                  min="0"
+                  max={duration || 0}
+                  value={currentTime}
+                  onChange={handleSeek}
+                  className="flex-1 h-1 bg-white/30 rounded-lg appearance-none cursor-pointer"
+                />
+                <span>{formatTime(duration)}</span>
+              </div>
+              
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-white hover:bg-white/20 h-8 w-8"
+              >
+                <Maximize className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Lower Section - Chat Area */}
+        <div className="bg-card/30 flex flex-col h-1/2 border-t border-border/50">
+          {/* Members List - Compact for mobile */}
+          <div className="p-3 border-b border-border/50">
+            <h3 className="font-semibold text-sm mb-2 flex items-center gap-2">
+              <Users className="w-4 h-4" />
+              Members ({roomData.members.length})
+            </h3>
+            <div className="flex gap-2 overflow-x-auto">
+              {roomData.members.map((member) => (
+                <div key={member.id} className="flex items-center gap-1 bg-background/50 rounded-full px-2 py-1 flex-shrink-0">
+                  <Avatar className="w-5 h-5">
+                    <AvatarImage src={member.avatar} />
+                    <AvatarFallback className="text-xs">
+                      {member.name.split(' ').map(n => n[0]).join('')}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="text-xs">{member.name.split(' ')[0]}</span>
+                  <div className={`w-1.5 h-1.5 rounded-full ${
+                    member.isOnline ? 'bg-green-500' : 'bg-gray-400'
+                  }`} />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Chat Messages */}
+          <div className="flex-1 p-3 overflow-y-auto">
+            <h3 className="font-semibold text-sm mb-2">Chat</h3>
+            <div className="space-y-2">
+              {messages.map((message) => (
+                <div key={message.id} className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className={`text-xs font-medium ${
+                      message.isSystem ? 'text-primary' : 'text-foreground'
+                    }`}>
+                      {message.user}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {message.timestamp}
+                    </span>
+                  </div>
+                  <p className={`text-xs ${
+                    message.isSystem ? 'text-muted-foreground italic' : 'text-foreground'
+                  }`}>
+                    {message.message}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Message Input */}
+          <div className="p-3 border-t border-border/50">
+            <div className="flex gap-2">
+              <Input
+                placeholder="Type a message..."
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                className="bg-background/50 text-sm"
+              />
+              <Button onClick={sendMessage} size="icon" variant="default" className="h-9 w-9">
+                <Send className="w-3 h-3" />
               </Button>
             </div>
           </div>
