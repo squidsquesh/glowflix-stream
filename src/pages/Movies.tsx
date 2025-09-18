@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Search, Filter, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import MoviePoster3D from '@/components/3d/MoviePoster3D';
 import CreateRoomModal from '@/components/modals/CreateRoomModal';
+import WatchChoiceModal from '@/components/modals/WatchChoiceModal';
 
 // Import posters
 import poster1 from '@/assets/poster-1.jpg';
@@ -25,8 +27,10 @@ const movies = [
 ];
 
 export default function Movies() {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGenre, setSelectedGenre] = useState('All');
+  const [isWatchChoiceOpen, setIsWatchChoiceOpen] = useState(false);
   const [isCreateRoomOpen, setIsCreateRoomOpen] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState<typeof movies[0] | null>(null);
 
@@ -38,11 +42,23 @@ export default function Movies() {
     return matchesSearch && matchesGenre;
   });
 
-  const createRoom = (movieId: number) => {
+  const handleMovieClick = (movieId: number) => {
     const movie = movies.find(m => m.id === movieId);
     if (movie) {
       setSelectedMovie(movie);
-      setIsCreateRoomOpen(true);
+      setIsWatchChoiceOpen(true);
+    }
+  };
+
+  const handleWatchTogether = () => {
+    setIsWatchChoiceOpen(false);
+    setIsCreateRoomOpen(true);
+  };
+
+  const handleWatchAlone = () => {
+    if (selectedMovie) {
+      setIsWatchChoiceOpen(false);
+      navigate(`/watch-alone/${selectedMovie.id}`);
     }
   };
 
@@ -123,7 +139,7 @@ export default function Movies() {
                 <MoviePoster3D 
                   posterUrl={movie.poster}
                   className="w-full h-full"
-                  onClick={() => createRoom(movie.id)}
+                  onClick={() => handleMovieClick(movie.id)}
                 />
                 
                 {/* Quick action overlay */}
@@ -135,11 +151,11 @@ export default function Movies() {
                   <Button
                     variant="hero"
                     size="lg"
-                    onClick={() => createRoom(movie.id)}
+                    onClick={() => handleMovieClick(movie.id)}
                     className="scale-90 hover:scale-100"
                   >
                     <Play className="w-5 h-5 mr-2" />
-                    Create Room
+                    Watch Movie
                   </Button>
                 </motion.div>
               </div>
@@ -175,6 +191,21 @@ export default function Movies() {
           </motion.div>
         )}
       </div>
+
+      {/* Watch Choice Modal */}
+      {selectedMovie && (
+        <WatchChoiceModal
+          isOpen={isWatchChoiceOpen}
+          onClose={() => {
+            setIsWatchChoiceOpen(false);
+            setSelectedMovie(null);
+          }}
+          movieTitle={selectedMovie.title}
+          movieId={selectedMovie.id}
+          onWatchTogether={handleWatchTogether}
+          onWatchAlone={handleWatchAlone}
+        />
+      )}
 
       {/* Create Room Modal */}
       {selectedMovie && (

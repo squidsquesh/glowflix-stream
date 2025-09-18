@@ -8,6 +8,7 @@ import TopNavigation from "@/components/layout/TopNavigation";
 import Index from "./pages/Index";
 import Movies from "./pages/Movies";
 import Room from "./pages/Room";
+import WatchAlone from "./pages/WatchAlone";
 import Search from "./pages/Search";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/movies" element={<Movies />} />
             <Route path="/room/:roomId" element={<Room />} />
+            <Route path="/watch-alone/:movieId" element={<WatchAlone />} />
             <Route path="/search" element={<Search />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/profile" element={<Profile />} />
