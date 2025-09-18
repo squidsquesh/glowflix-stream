@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { LogIn, UserPlus, Home, Search, User, Film, Menu } from 'lucide-react';
+import { LogIn, UserPlus, Home, Search, User, Film, Menu, Sparkles } from 'lucide-react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 
@@ -8,6 +8,7 @@ const navItems = [
   { path: '/movies', icon: Film, label: 'Movies' },
   { path: '/search', icon: Search, label: 'Search' },
   { path: '/dashboard', icon: Menu, label: 'Rooms' },
+  { path: '/future', icon: Sparkles, label: 'Future' },
   { path: '/profile', icon: User, label: 'Profile' },
 ];
 

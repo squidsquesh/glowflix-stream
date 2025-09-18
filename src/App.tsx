@@ -14,6 +14,7 @@ import Profile from "./pages/Profile";
 import Login from "./pages/Auth/Login";
 import Signup from "./pages/Auth/Signup";
 import Pricing from "./pages/Pricing";
+import Future from "./pages/Future";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/pricing" element={<Pricing />} />
+            <Route path="/future" element={<Future />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
