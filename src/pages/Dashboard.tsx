@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion';
-import { Plus, Users, Clock, Trash2, Edit, Eye } from 'lucide-react';
+import { Plus, Users, Clock, Trash2, Edit, Eye, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { JoinRoomModal } from '@/components/modals/JoinRoomModal';
 
 const myRooms = [
   { id: 1, name: 'Friday Night Movies', movie: 'Nexus Dawn', members: 8, created: '2 hours ago', status: 'active' },
@@ -33,10 +34,18 @@ export default function Dashboard() {
                 Manage your movie rooms and join friends
               </p>
             </div>
-            <Button variant="hero" size="lg">
-              <Plus className="w-5 h-5 mr-2" />
-              Create New Room
-            </Button>
+            <div className="flex gap-3">
+              <JoinRoomModal>
+                <Button variant="outline" size="lg">
+                  <UserPlus className="w-5 h-5 mr-2" />
+                  Join Room
+                </Button>
+              </JoinRoomModal>
+              <Button variant="hero" size="lg">
+                <Plus className="w-5 h-5 mr-2" />
+                Create New Room
+              </Button>
+            </div>
           </div>
         </motion.div>
 
