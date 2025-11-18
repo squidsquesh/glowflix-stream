@@ -16,7 +16,7 @@ const featuredMovies = [
 
 export default function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center hero-gradient overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center hero-gradient overflow-hidden pt-24 lg:pt-0">
       {/* Animated background particles */}
       <div className="absolute inset-0">
         {[...Array(20)].map((_, i) => (
