@@ -102,7 +102,7 @@ export default function TopNavigation() {
       {/* Top Navigation - Desktop (Default State) */}
       <nav 
         ref={topNavRef}
-        className="hidden lg:block fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-lg border-b border-border/50"
+        className="hidden lg:block fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-lg border-b border-primary/20 rounded-b-3xl shadow-[0_8px_30px_-10px_rgba(0,0,0,0.5)] mx-4"
       >
         <div className="container mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between">
