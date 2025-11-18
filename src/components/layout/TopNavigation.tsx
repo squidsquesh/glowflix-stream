@@ -1,8 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { LogIn, UserPlus, Home, Search, User, Film, Menu, Sparkles, DollarSign } from 'lucide-react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const navItems = [
   { path: '/', icon: Home, label: 'Home' },
@@ -15,119 +18,104 @@ const navItems = [
 ];
 
 export default function TopNavigation() {
-  // Simulate authentication state - in real app this would come from auth context
   const isAuthenticated = false;
   const location = useLocation();
-  const navRef = useRef<HTMLDivElement>(null);
-  const logoRef = useRef<HTMLDivElement>(null);
-  const authRef = useRef<HTMLDivElement>(null);
-  const labelRefs = useRef<(HTMLSpanElement | null)[]>([]);
-  const [isFloating, setIsFloating] = useState(false);
+  const topNavRef = useRef<HTMLDivElement>(null);
+  const floatingNavRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const shouldFloat = scrollY > 100;
+    const ctx = gsap.context(() => {
+      // Initial state - hide floating nav
+      gsap.set(floatingNavRef.current, {
+        y: 100,
+        opacity: 0,
+        scale: 0.8,
+      });
 
-      if (shouldFloat !== isFloating) {
-        setIsFloating(shouldFloat);
-
-        if (shouldFloat) {
-          // Animate to floating bottom state
-          const tl = gsap.timeline();
+      // Create scroll trigger
+      ScrollTrigger.create({
+        start: 'top -80',
+        end: 99999,
+        onUpdate: (self) => {
+          const progress = self.progress;
           
-          tl.to(navRef.current, {
-            top: 'auto',
-            bottom: '2rem',
-            left: '50%',
-            right: 'auto',
-            transform: 'translateX(-50%)',
-            width: 'auto',
-            maxWidth: '600px',
-            borderRadius: '9999px',
-            padding: '0.75rem 1.5rem',
-            boxShadow: '0 20px 40px -10px rgba(0, 0, 0, 0.5), 0 0 60px -20px hsl(var(--primary) / 0.3)',
-            background: 'hsl(var(--card) / 0.98)',
-            border: '1px solid hsl(var(--border) / 0.8)',
-            duration: 0.6,
-            ease: 'power3.out',
-          })
-          .to([logoRef.current, authRef.current], {
+          if (self.direction === -1 && progress === 0) {
+            // Scrolling up to top - show top nav, hide floating
+            gsap.to(topNavRef.current, {
+              y: 0,
+              opacity: 1,
+              duration: 0.5,
+              ease: 'power3.out',
+            });
+            
+            gsap.to(floatingNavRef.current, {
+              y: 100,
+              opacity: 0,
+              scale: 0.8,
+              duration: 0.4,
+              ease: 'power3.in',
+            });
+          }
+        },
+        onEnter: () => {
+          // Scrolled down - hide top nav, show floating
+          gsap.to(topNavRef.current, {
+            y: -100,
             opacity: 0,
-            scale: 0.8,
-            duration: 0.3,
-            ease: 'power2.in',
-          }, 0)
-          .to(labelRefs.current, {
-            opacity: 0,
-            x: -10,
-            duration: 0.3,
-            ease: 'power2.in',
-            stagger: 0.02,
-          }, 0);
-        } else {
-          // Animate back to top state
-          const tl = gsap.timeline();
+            duration: 0.4,
+            ease: 'power3.in',
+          });
           
-          tl.to(navRef.current, {
-            top: '0',
-            bottom: 'auto',
-            left: '0',
-            right: '0',
-            transform: 'none',
-            width: '100%',
-            maxWidth: '100%',
-            borderRadius: '0',
-            padding: '0',
-            boxShadow: 'none',
-            background: 'hsl(var(--card) / 0.95)',
-            border: 'none',
-            borderBottom: '1px solid hsl(var(--border) / 0.5)',
-            duration: 0.6,
-            ease: 'power3.out',
-          })
-          .to([logoRef.current, authRef.current], {
+          gsap.to(floatingNavRef.current, {
+            y: 0,
             opacity: 1,
             scale: 1,
-            duration: 0.4,
-            ease: 'power2.out',
-          }, 0.2)
-          .to(labelRefs.current, {
+            duration: 0.6,
+            ease: 'power3.out',
+          });
+        },
+        onLeaveBack: () => {
+          // Scrolled back to top - show top nav, hide floating
+          gsap.to(topNavRef.current, {
+            y: 0,
             opacity: 1,
-            x: 0,
+            duration: 0.5,
+            ease: 'power3.out',
+          });
+          
+          gsap.to(floatingNavRef.current, {
+            y: 100,
+            opacity: 0,
+            scale: 0.8,
             duration: 0.4,
-            ease: 'power2.out',
-            stagger: 0.02,
-          }, 0.3);
-        }
-      }
-    };
+            ease: 'power3.in',
+          });
+        },
+      });
+    });
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [isFloating]);
+    return () => ctx.revert();
+  }, []);
 
   return (
     <>
-      {/* Top Navigation - Desktop */}
+      {/* Top Navigation - Desktop (Default State) */}
       <nav 
-        ref={navRef}
+        ref={topNavRef}
         className="hidden lg:block fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-lg border-b border-border/50"
       >
-        <div className={`${isFloating ? '' : 'container mx-auto px-4 sm:px-6 py-4'}`}>
-          <div className={`flex items-center ${isFloating ? 'justify-center gap-3' : 'justify-between'}`}>
+        <div className="container mx-auto px-4 sm:px-6 py-4">
+          <div className="flex items-center justify-between">
             {/* Logo */}
-            <div ref={logoRef} className={`flex items-center gap-2 flex-shrink-0 ${isFloating ? 'hidden' : ''}`}>
-              <Link to="/">
-                <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-                  Cinema Together
-                </h1>
-              </Link>
-            </div>
+            <Link to="/" className="flex items-center gap-2 flex-shrink-0">
+              <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+                Cinema Together
+              </h1>
+            </Link>
 
             {/* Desktop Navigation */}
-            <div className={`flex items-center ${isFloating ? 'gap-2' : 'gap-6'}`}>
-              {navItems.map((item, index) => {
+            <div className="flex items-center gap-6">
+              {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = location.pathname === item.path;
                 
@@ -135,21 +123,14 @@ export default function TopNavigation() {
                   <NavLink
                     key={item.path}
                     to={item.path}
-                    className={`flex items-center gap-2 rounded-lg text-sm font-medium transition-colors ${
-                      isFloating ? 'px-3 py-2' : 'px-3 py-2'
-                    } ${
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                       isActive 
                         ? 'bg-primary/10 text-primary' 
                         : 'text-muted-foreground hover:text-primary hover:bg-muted/50'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
-                    <span 
-                      ref={(el) => { labelRefs.current[index] = el; }}
-                      className={isFloating ? 'hidden' : 'hidden xl:inline'}
-                    >
-                      {item.label}
-                    </span>
+                    <span className="hidden xl:inline">{item.label}</span>
                   </NavLink>
                 );
               })}
@@ -157,7 +138,7 @@ export default function TopNavigation() {
 
             {/* Desktop Auth Buttons */}
             {!isAuthenticated && (
-              <div ref={authRef} className={`flex items-center gap-3 flex-shrink-0 ${isFloating ? 'hidden' : ''}`}>
+              <div className="flex items-center gap-3 flex-shrink-0">
                 <Button asChild variant="ghost" size="sm">
                   <Link to="/login">
                     <LogIn className="w-4 h-4 mr-2" />
@@ -175,6 +156,32 @@ export default function TopNavigation() {
             )}
           </div>
         </div>
+      </nav>
+
+      {/* Floating Bottom Navigation - Desktop (Scroll State) */}
+      <nav 
+        ref={floatingNavRef}
+        className="hidden lg:flex fixed bottom-8 left-1/2 -translate-x-1/2 z-50 items-center gap-2 px-6 py-3 bg-card/98 backdrop-blur-xl rounded-full border border-border/80 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.5),0_0_60px_-20px_hsl(var(--primary)/0.3)]"
+        style={{ willChange: 'transform, opacity' }}
+      >
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = location.pathname === item.path;
+          
+          return (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              className={`flex items-center justify-center w-10 h-10 rounded-full transition-all ${
+                isActive 
+                  ? 'bg-primary/20 text-primary scale-110' 
+                  : 'text-muted-foreground hover:text-primary hover:bg-muted/50 hover:scale-105'
+              }`}
+            >
+              <Icon className="w-5 h-5" />
+            </NavLink>
+          );
+        })}
       </nav>
 
       {/* Mobile Bottom Navigation */}
