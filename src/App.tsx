@@ -28,7 +28,7 @@ const App = () => (
       <BrowserRouter>
         <div className="relative min-h-screen bg-background">
           <TopNavigation />
-          <div className="lg:pt-16 pb-20 lg:pb-0"> {/* Bottom padding on mobile for bottom nav, top padding on desktop */}
+          <div className="min-h-screen lg:pt-16 pb-20 lg:pb-0"> {/* Bottom padding on mobile for bottom nav, top padding on desktop */}
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/movies" element={<Movies />} />
