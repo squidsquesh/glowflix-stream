@@ -185,7 +185,7 @@ export default function TopNavigation() {
       </nav>
 
       {/* Mobile Bottom Navigation */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-card/98 backdrop-blur-xl border-t border-primary/20 shadow-[0_-8px_30px_-10px_rgba(0,0,0,0.5)]">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-card/98 backdrop-blur-xl border-t-2 border-primary/30 rounded-t-[2rem] shadow-[0_-8px_30px_-10px_rgba(0,0,0,0.5),0_-2px_20px_-5px_hsl(var(--primary)/0.5),0_-1px_8px_0px_hsl(var(--primary)/0.3)]">
         <div className="flex items-center justify-around px-2 py-3">
           {navItems.map((item) => {
             const Icon = item.icon;
