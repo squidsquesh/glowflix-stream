@@ -114,9 +114,9 @@ export default function Movies() {
             className="h-12 w-12 data-[state=on]:bg-[#FF0000] data-[state=on]:text-white hover:bg-accent/50"
           >
             {isYouTubeMode ? (
-              <Youtube className="h-6 w-6" />
-            ) : (
               <Film className="h-6 w-6" />
+            ) : (
+              <Youtube className="h-6 w-6" />
             )}
           </Toggle>
         </motion.div>
