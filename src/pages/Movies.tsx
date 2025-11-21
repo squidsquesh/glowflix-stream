@@ -5,6 +5,7 @@ import { Search, Filter, Play, Youtube, Film } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Toggle } from '@/components/ui/toggle';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import MoviePoster3D from '@/components/3d/MoviePoster3D';
 import CreateRoomModal from '@/components/modals/CreateRoomModal';
 import WatchChoiceModal from '@/components/modals/WatchChoiceModal';
@@ -107,18 +108,31 @@ export default function Movies() {
           </div>
           
           {/* YouTube/Movies Toggle */}
-          <Toggle
-            pressed={isYouTubeMode}
-            onPressedChange={handleModeToggle}
-            aria-label="Toggle YouTube mode"
-            className="h-12 w-12 data-[state=on]:bg-[#FF0000] data-[state=on]:text-white hover:bg-accent/50"
-          >
-            {isYouTubeMode ? (
-              <Film className="h-6 w-6" />
-            ) : (
-              <Youtube className="h-6 w-6" />
-            )}
-          </Toggle>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Toggle
+                  pressed={isYouTubeMode}
+                  onPressedChange={handleModeToggle}
+                  aria-label="Toggle YouTube mode"
+                  className={`h-12 w-12 ${
+                    isYouTubeMode 
+                      ? 'data-[state=on]:bg-[#FF0000] data-[state=on]:text-white hover:bg-primary/20' 
+                      : 'hover:bg-[#FF0000]/20 data-[state=off]:hover:text-[#FF0000]'
+                  }`}
+                >
+                  {isYouTubeMode ? (
+                    <Film className="h-6 w-6" />
+                  ) : (
+                    <Youtube className="h-6 w-6" />
+                  )}
+                </Toggle>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{isYouTubeMode ? 'Switch to movies' : 'Switch to YouTube videos'}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </motion.div>
 
         {/* Search and Filters */}
