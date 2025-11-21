@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Search, Filter, Play } from 'lucide-react';
+import { Search, Filter, Play, Youtube, Film } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Toggle } from '@/components/ui/toggle';
 import MoviePoster3D from '@/components/3d/MoviePoster3D';
 import CreateRoomModal from '@/components/modals/CreateRoomModal';
 import WatchChoiceModal from '@/components/modals/WatchChoiceModal';
@@ -26,6 +27,17 @@ const movies = [
   { id: 8, title: 'Golden Realm: Return', genre: 'Fantasy', year: 2024, rating: 8.9, poster: poster3 },
 ];
 
+const youtubeVideos = [
+  { id: 1, title: 'Epic Gaming Moments', genre: 'Gaming', year: 2024, rating: 9.2, poster: poster1 },
+  { id: 2, title: 'Tech Reviews 2024', genre: 'Technology', year: 2024, rating: 8.8, poster: poster2 },
+  { id: 3, title: 'Music Mashup Mix', genre: 'Music', year: 2024, rating: 9.5, poster: poster3 },
+  { id: 4, title: 'Vlog Adventures', genre: 'Lifestyle', year: 2024, rating: 8.3, poster: poster4 },
+  { id: 5, title: 'Learning Code Pro', genre: 'Education', year: 2024, rating: 9.1, poster: poster5 },
+  { id: 6, title: 'Gaming Live Stream', genre: 'Gaming', year: 2024, rating: 8.9, poster: poster1 },
+  { id: 7, title: 'Tech Unboxing', genre: 'Technology', year: 2024, rating: 8.7, poster: poster2 },
+  { id: 8, title: 'Music Production', genre: 'Music', year: 2024, rating: 9.0, poster: poster3 },
+];
+
 export default function Movies() {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
@@ -33,21 +45,32 @@ export default function Movies() {
   const [isWatchChoiceOpen, setIsWatchChoiceOpen] = useState(false);
   const [isCreateRoomOpen, setIsCreateRoomOpen] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState<typeof movies[0] | null>(null);
+  const [isYouTubeMode, setIsYouTubeMode] = useState(false);
 
-  const genres = ['All', 'Action', 'Sci-Fi', 'Fantasy', 'Drama', 'Adventure'];
+  const movieGenres = ['All', 'Action', 'Sci-Fi', 'Fantasy', 'Drama', 'Adventure'];
+  const youtubeGenres = ['All', 'Gaming', 'Technology', 'Music', 'Lifestyle', 'Education'];
   
-  const filteredMovies = movies.filter(movie => {
-    const matchesSearch = movie.title.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesGenre = selectedGenre === 'All' || movie.genre === selectedGenre;
+  const genres = isYouTubeMode ? youtubeGenres : movieGenres;
+  const currentContent = isYouTubeMode ? youtubeVideos : movies;
+  
+  const filteredMovies = currentContent.filter(item => {
+    const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesGenre = selectedGenre === 'All' || item.genre === selectedGenre;
     return matchesSearch && matchesGenre;
   });
 
   const handleMovieClick = (movieId: number) => {
-    const movie = movies.find(m => m.id === movieId);
-    if (movie) {
-      setSelectedMovie(movie);
+    const content = currentContent.find(m => m.id === movieId);
+    if (content) {
+      setSelectedMovie(content);
       setIsWatchChoiceOpen(true);
     }
+  };
+
+  const handleModeToggle = (pressed: boolean) => {
+    setIsYouTubeMode(pressed);
+    setSearchTerm('');
+    setSelectedGenre('All');
   };
 
   const handleWatchTogether = () => {
@@ -69,14 +92,33 @@ export default function Movies() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          className="mb-8 flex items-start justify-between gap-4"
         >
-          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-            Movie Library
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            Choose a movie and create a room to watch with friends
-          </p>
+          <div>
+            <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+              {isYouTubeMode ? 'YouTube Videos' : 'Movie Library'}
+            </h1>
+            <p className="text-muted-foreground text-lg">
+              {isYouTubeMode 
+                ? 'Choose a video and create a room to watch with friends'
+                : 'Choose a movie and create a room to watch with friends'
+              }
+            </p>
+          </div>
+          
+          {/* YouTube/Movies Toggle */}
+          <Toggle
+            pressed={isYouTubeMode}
+            onPressedChange={handleModeToggle}
+            aria-label="Toggle YouTube mode"
+            className="h-12 w-12 data-[state=on]:bg-[#FF0000] data-[state=on]:text-white hover:bg-accent/50"
+          >
+            {isYouTubeMode ? (
+              <Youtube className="h-6 w-6" />
+            ) : (
+              <Film className="h-6 w-6" />
+            )}
+          </Toggle>
         </motion.div>
 
         {/* Search and Filters */}
@@ -90,7 +132,7 @@ export default function Movies() {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
-                placeholder="Search movies..."
+                placeholder={isYouTubeMode ? "Search videos..." : "Search movies..."}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10 bg-card/50 border-border/50 focus:border-primary"
@@ -154,8 +196,17 @@ export default function Movies() {
                     onClick={() => handleMovieClick(movie.id)}
                     className="scale-90 hover:scale-100"
                   >
-                    <Play className="w-5 h-5 mr-2" />
-                    Watch Movie
+                    {isYouTubeMode ? (
+                      <>
+                        <Youtube className="w-5 h-5 mr-2" />
+                        Watch Video
+                      </>
+                    ) : (
+                      <>
+                        <Play className="w-5 h-5 mr-2" />
+                        Watch Movie
+                      </>
+                    )}
                   </Button>
                 </motion.div>
               </div>
@@ -186,7 +237,9 @@ export default function Movies() {
             animate={{ opacity: 1 }}
             className="text-center py-12"
           >
-            <h3 className="text-xl font-semibold mb-2">No movies found</h3>
+            <h3 className="text-xl font-semibold mb-2">
+              {isYouTubeMode ? 'No videos found' : 'No movies found'}
+            </h3>
             <p className="text-muted-foreground">Try adjusting your search or filter criteria</p>
           </motion.div>
         )}
