@@ -14,7 +14,7 @@ const featuredMovies = [
   { id: 3, title: 'Golden Realm', poster: poster3 },
 ];
 
-export default function HeroSection() {
+export default function HeroSection({ onAuthClick }: { onAuthClick?: () => void }) {
   return (
     <section className="relative min-h-screen flex items-center justify-center hero-gradient overflow-hidden pt-24 lg:pt-0">
       {/* Animated background particles */}
@@ -76,7 +76,7 @@ export default function HeroSection() {
               transition={{ duration: 0.8, delay: 0.6 }}
               className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
             >
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground golden-glow">
+              <Button size="lg" onClick={onAuthClick} className="bg-primary hover:bg-primary/90 text-primary-foreground golden-glow">
                 <Play className="w-5 h-5 mr-2" />
                 Start Watching
               </Button>

@@ -17,7 +17,7 @@ const navItems = [
   { path: '/profile', icon: User, label: 'Profile' },
 ];
 
-export default function TopNavigation() {
+export default function TopNavigation({ onAuthClick }: { onAuthClick?: () => void }) {
   const isAuthenticated = false;
   const location = useLocation();
   const topNavRef = useRef<HTMLDivElement>(null);
@@ -139,18 +139,10 @@ export default function TopNavigation() {
             {/* Desktop Auth Buttons */}
             {!isAuthenticated && (
               <div className="flex items-center gap-3 flex-shrink-0">
-                <Button asChild variant="ghost" size="sm">
-                  <Link to="/login">
-                    <LogIn className="w-4 h-4 mr-2" />
-                    <span className="hidden md:inline">Sign In</span>
-                  </Link>
-                </Button>
-                
-                <Button asChild variant="hero" size="sm">
-                  <Link to="/signup">
-                    <UserPlus className="w-4 h-4 mr-2" />
-                    <span className="hidden md:inline">Sign Up</span>
-                  </Link>
+                <Button onClick={onAuthClick} variant="hero" size="sm" className="bg-gradient-to-r from-primary to-primary-glow">
+                  <LogIn className="w-4 h-4 mr-2" />
+                  <span className="hidden md:inline">Sign In / Sign Up</span>
+                  <span className="md:hidden">Auth</span>
                 </Button>
               </div>
             )}
