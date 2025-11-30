@@ -1,5 +1,4 @@
-import { Button } from '@/components/ui/button';
-import { LogIn, UserPlus, Home, Search, User, Film, Menu, Sparkles, DollarSign } from 'lucide-react';
+import { Home, Search, User, Film, Menu, Sparkles, DollarSign } from 'lucide-react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
@@ -17,8 +16,7 @@ const navItems = [
   { path: '/profile', icon: User, label: 'Profile' },
 ];
 
-export default function TopNavigation({ onAuthClick }: { onAuthClick?: () => void }) {
-  const isAuthenticated = false;
+export default function TopNavigation() {
   const location = useLocation();
   const topNavRef = useRef<HTMLDivElement>(null);
   const floatingNavRef = useRef<HTMLDivElement>(null);
@@ -135,17 +133,6 @@ export default function TopNavigation({ onAuthClick }: { onAuthClick?: () => voi
                 );
               })}
             </div>
-
-            {/* Desktop Auth Buttons */}
-            {!isAuthenticated && (
-              <div className="flex items-center gap-3 flex-shrink-0">
-                <Button onClick={onAuthClick} variant="hero" size="sm" className="bg-gradient-to-r from-primary to-primary-glow">
-                  <LogIn className="w-4 h-4 mr-2" />
-                  <span className="hidden md:inline">Sign In / Sign Up</span>
-                  <span className="md:hidden">Auth</span>
-                </Button>
-              </div>
-            )}
           </div>
         </div>
       </nav>

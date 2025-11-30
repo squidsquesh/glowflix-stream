@@ -9,6 +9,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import MoviePoster3D from '@/components/3d/MoviePoster3D';
 import CreateRoomModal from '@/components/modals/CreateRoomModal';
 import WatchChoiceModal from '@/components/modals/WatchChoiceModal';
+import { useAuth } from '@/App';
 
 // Import posters
 import poster1 from '@/assets/poster-1.jpg';
@@ -41,6 +42,7 @@ const youtubeVideos = [
 
 export default function Movies() {
   const navigate = useNavigate();
+  const { isAuthenticated, openAuthModal } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGenre, setSelectedGenre] = useState('All');
   const [isWatchChoiceOpen, setIsWatchChoiceOpen] = useState(false);
@@ -61,6 +63,11 @@ export default function Movies() {
   });
 
   const handleMovieClick = (movieId: number) => {
+    if (!isAuthenticated) {
+      openAuthModal();
+      return;
+    }
+    
     const content = currentContent.find(m => m.id === movieId);
     if (content) {
       setSelectedMovie(content);
