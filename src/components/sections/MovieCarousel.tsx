@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ChevronLeft, ChevronRight, ArrowUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -24,13 +24,28 @@ const movies = [
 
 export default function MovieCarousel() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  
   const { scrollYProgress } = useScroll({
-    target: containerRef,
+    target: sectionRef,
     offset: ["start end", "end start"]
   });
   
   const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0]);
   const y = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [50, 0, 0, -50]);
+
+  // Auto-scroll carousel based on page scroll
+  useEffect(() => {
+    const unsubscribe = scrollYProgress.on('change', (progress) => {
+      if (containerRef.current) {
+        const maxScroll = containerRef.current.scrollWidth - containerRef.current.clientWidth;
+        const scrollPosition = progress * maxScroll * 2; // Multiply by 2 for faster scroll
+        containerRef.current.scrollLeft = scrollPosition;
+      }
+    });
+
+    return () => unsubscribe();
+  }, [scrollYProgress]);
 
   const scrollLeft = () => {
     if (containerRef.current) {
@@ -50,6 +65,7 @@ export default function MovieCarousel() {
 
   return (
     <motion.section 
+      ref={sectionRef}
       style={{ opacity, y }}
       className="py-20 relative"
     >
@@ -103,7 +119,7 @@ export default function MovieCarousel() {
         {/* Movie Carousel */}
         <div
           ref={containerRef}
-          className="flex gap-6 overflow-x-auto scrollbar-hide pb-4"
+          className="flex gap-6 overflow-x-auto scrollbar-hide pb-4 scroll-smooth"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {movies.map((movie, index) => (
