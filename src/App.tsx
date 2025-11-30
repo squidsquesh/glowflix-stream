@@ -3,8 +3,10 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useState } from "react";
 
 import TopNavigation from "@/components/layout/TopNavigation";
+import AuthModal from "@/components/auth/AuthModal";
 import Index from "./pages/Index";
 import Movies from "./pages/Movies";
 import Room from "./pages/Room";
@@ -20,35 +22,40 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <div className="relative min-h-screen bg-background">
-          <TopNavigation />
-          <div className="min-h-screen lg:pt-16 pb-20 lg:pb-0"> {/* Bottom padding on mobile for bottom nav, top padding on desktop */}
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/movies" element={<Movies />} />
-            <Route path="/room/:roomId" element={<Room />} />
-            <Route path="/watch-alone/:movieId" element={<WatchAlone />} />
-            <Route path="/search" element={<Search />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/pricing" element={<Pricing />} />
-            <Route path="/future" element={<Future />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+const App = () => {
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <div className="relative min-h-screen bg-background">
+            <TopNavigation onAuthClick={() => setAuthModalOpen(true)} />
+            <div className="min-h-screen lg:pt-16 pb-20 lg:pb-0"> {/* Bottom padding on mobile for bottom nav, top padding on desktop */}
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/movies" element={<Movies />} />
+                <Route path="/room/:roomId" element={<Room />} />
+                <Route path="/watch-alone/:movieId" element={<WatchAlone />} />
+                <Route path="/search" element={<Search />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/pricing" element={<Pricing />} />
+                <Route path="/future" element={<Future />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </div>
+            <AuthModal open={authModalOpen} onOpenChange={setAuthModalOpen} />
           </div>
-        </div>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
