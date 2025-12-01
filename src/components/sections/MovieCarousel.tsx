@@ -26,26 +26,53 @@ export default function MovieCarousel() {
   const containerRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
   
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end end"]
-  });
-  
-  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0]);
-  const y = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [50, 0, 0, -50]);
-
-  // Auto-scroll carousel based on page scroll
+  // Auto-scroll carousel only when at bottom of page
   useEffect(() => {
-    const unsubscribe = scrollYProgress.on('change', (progress) => {
-      if (containerRef.current) {
-        const maxScroll = containerRef.current.scrollWidth - containerRef.current.clientWidth;
-        const scrollPosition = progress * maxScroll * 0.8; // Smooth scroll
-        containerRef.current.scrollLeft = scrollPosition;
+    const handleScroll = () => {
+      if (containerRef.current && sectionRef.current) {
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+        const scrollTop = window.scrollY;
+        
+        // Check if we're at the bottom of the page
+        const isAtBottom = scrollTop + windowHeight >= documentHeight - 10;
+        
+        if (isAtBottom) {
+          // Get the bounding rect of the section
+          const sectionRect = sectionRef.current.getBoundingClientRect();
+          const sectionBottom = sectionRect.bottom;
+          
+          // Calculate how much extra scrolling is being attempted
+          const extraScroll = (documentHeight - 10) - (scrollTop + windowHeight);
+          
+          // If at bottom and user continues scrolling, scroll the carousel
+          const maxCarouselScroll = containerRef.current.scrollWidth - containerRef.current.clientWidth;
+          
+          // Use wheel event delta for smooth horizontal scrolling
+          let accumulatedDelta = 0;
+          
+          const wheelHandler = (e: WheelEvent) => {
+            if (isAtBottom && containerRef.current) {
+              const currentScroll = containerRef.current.scrollLeft;
+              
+              // If carousel isn't fully scrolled yet, prevent default and scroll carousel
+              if (currentScroll < maxCarouselScroll && e.deltaY > 0) {
+                e.preventDefault();
+                accumulatedDelta += e.deltaY;
+                containerRef.current.scrollLeft = Math.min(currentScroll + e.deltaY * 0.5, maxCarouselScroll);
+              }
+            }
+          };
+          
+          window.addEventListener('wheel', wheelHandler, { passive: false });
+          return () => window.removeEventListener('wheel', wheelHandler);
+        }
       }
-    });
+    };
 
-    return () => unsubscribe();
-  }, [scrollYProgress]);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const scrollLeft = () => {
     if (containerRef.current) {
@@ -66,7 +93,10 @@ export default function MovieCarousel() {
   return (
     <motion.section 
       ref={sectionRef}
-      style={{ opacity, y }}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      viewport={{ once: true, margin: "-100px" }}
       className="py-20 relative"
     >
       <div className="container mx-auto px-6">
