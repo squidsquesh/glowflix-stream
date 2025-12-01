@@ -1,8 +1,12 @@
 import { useRef, useEffect } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, ArrowUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import MoviePoster3D from '@/components/3d/MoviePoster3D';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 // Import all generated posters
 import poster1 from '@/assets/poster-1.jpg';
@@ -25,53 +29,42 @@ const movies = [
 export default function MovieCarousel() {
   const containerRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
   
-  // Auto-scroll carousel only when at bottom of page
+  // GSAP horizontal scroll when at bottom
   useEffect(() => {
-    let isAtBottom = false;
+    if (!containerRef.current || !sectionRef.current || !wrapperRef.current) return;
+
+    const container = containerRef.current;
+    const section = sectionRef.current;
     
-    const checkIfAtBottom = () => {
-      const windowHeight = window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight;
-      const scrollTop = window.scrollY;
-      isAtBottom = scrollTop + windowHeight >= documentHeight - 5;
-    };
-    
-    const wheelHandler = (e: WheelEvent) => {
-      checkIfAtBottom();
-      
-      if (isAtBottom && containerRef.current) {
-        const maxCarouselScroll = containerRef.current.scrollWidth - containerRef.current.clientWidth;
-        const currentScroll = containerRef.current.scrollLeft;
-        
-        // If scrolling down and carousel isn't fully scrolled yet
-        if (e.deltaY > 0 && currentScroll < maxCarouselScroll) {
-          e.preventDefault();
-          // Increased multiplier from 0.5 to 2.0 for much faster, natural scrolling
-          const scrollAmount = e.deltaY * 2.0;
-          containerRef.current.scrollTo({
-            left: Math.min(currentScroll + scrollAmount, maxCarouselScroll),
-            behavior: 'auto' // Changed to 'auto' for instant response
-          });
-        }
-        // Allow scrolling back up or scrolling back in carousel
-        else if (e.deltaY < 0 && currentScroll > 0) {
-          e.preventDefault();
-          const scrollAmount = e.deltaY * 2.0;
-          containerRef.current.scrollTo({
-            left: Math.max(currentScroll + scrollAmount, 0),
-            behavior: 'auto'
-          });
-        }
-      }
+    // Calculate the total scroll distance needed
+    const getScrollAmount = () => {
+      return -(container.scrollWidth - container.clientWidth);
     };
 
-    window.addEventListener('scroll', checkIfAtBottom, { passive: true });
-    window.addEventListener('wheel', wheelHandler, { passive: false });
-    
+    // Create GSAP ScrollTrigger animation
+    const scrollTrigger = ScrollTrigger.create({
+      trigger: wrapperRef.current,
+      start: 'top top',
+      end: () => `+=${Math.abs(getScrollAmount())}`,
+      pin: true,
+      scrub: 1, // Smooth scrubbing with 1 second lag for momentum
+      anticipatePin: 1,
+      invalidateOnRefresh: true,
+      onUpdate: (self) => {
+        const progress = self.progress;
+        gsap.to(container, {
+          x: getScrollAmount() * progress,
+          duration: 0.5,
+          ease: 'power2.out',
+          overwrite: true
+        });
+      }
+    });
+
     return () => {
-      window.removeEventListener('scroll', checkIfAtBottom);
-      window.removeEventListener('wheel', wheelHandler);
+      scrollTrigger.kill();
     };
   }, []);
 
@@ -92,15 +85,16 @@ export default function MovieCarousel() {
   };
 
   return (
-    <motion.section 
-      ref={sectionRef}
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      viewport={{ once: true, margin: "-100px" }}
-      className="py-20 relative"
-    >
-      <div className="container mx-auto px-6">
+    <div ref={wrapperRef} className="relative overflow-hidden">
+      <motion.section 
+        ref={sectionRef}
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true, margin: "-100px" }}
+        className="py-20 relative min-h-screen flex items-center"
+      >
+        <div className="container mx-auto px-6 w-full">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -150,8 +144,8 @@ export default function MovieCarousel() {
         {/* Movie Carousel */}
         <div
           ref={containerRef}
-          className="flex gap-6 overflow-x-auto scrollbar-hide pb-4 scroll-smooth"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          className="flex gap-6 pb-4 will-change-transform"
+          style={{ width: 'fit-content' }}
         >
           {movies.map((movie, index) => (
             <motion.div
@@ -200,11 +194,12 @@ export default function MovieCarousel() {
         </div>
       </div>
       
-      {/* Background decoration */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 -right-20 w-40 h-40 bg-primary/5 rounded-full blur-3xl animate-float" />
-        <div className="absolute bottom-1/4 -left-20 w-32 h-32 bg-primary/10 rounded-full blur-2xl animate-float" style={{ animationDelay: '1s' }} />
-      </div>
-    </motion.section>
+        {/* Background decoration */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+          <div className="absolute top-1/4 -right-20 w-40 h-40 bg-primary/5 rounded-full blur-3xl animate-float" />
+          <div className="absolute bottom-1/4 -left-20 w-32 h-32 bg-primary/10 rounded-full blur-2xl animate-float" style={{ animationDelay: '1s' }} />
+        </div>
+      </motion.section>
+    </div>
   );
 }
