@@ -28,50 +28,51 @@ export default function MovieCarousel() {
   
   // Auto-scroll carousel only when at bottom of page
   useEffect(() => {
-    const handleScroll = () => {
-      if (containerRef.current && sectionRef.current) {
-        const windowHeight = window.innerHeight;
-        const documentHeight = document.documentElement.scrollHeight;
-        const scrollTop = window.scrollY;
+    let isAtBottom = false;
+    
+    const checkIfAtBottom = () => {
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollTop = window.scrollY;
+      isAtBottom = scrollTop + windowHeight >= documentHeight - 5;
+    };
+    
+    const wheelHandler = (e: WheelEvent) => {
+      checkIfAtBottom();
+      
+      if (isAtBottom && containerRef.current) {
+        const maxCarouselScroll = containerRef.current.scrollWidth - containerRef.current.clientWidth;
+        const currentScroll = containerRef.current.scrollLeft;
         
-        // Check if we're at the bottom of the page
-        const isAtBottom = scrollTop + windowHeight >= documentHeight - 10;
-        
-        if (isAtBottom) {
-          // Get the bounding rect of the section
-          const sectionRect = sectionRef.current.getBoundingClientRect();
-          const sectionBottom = sectionRect.bottom;
-          
-          // Calculate how much extra scrolling is being attempted
-          const extraScroll = (documentHeight - 10) - (scrollTop + windowHeight);
-          
-          // If at bottom and user continues scrolling, scroll the carousel
-          const maxCarouselScroll = containerRef.current.scrollWidth - containerRef.current.clientWidth;
-          
-          // Use wheel event delta for smooth horizontal scrolling
-          let accumulatedDelta = 0;
-          
-          const wheelHandler = (e: WheelEvent) => {
-            if (isAtBottom && containerRef.current) {
-              const currentScroll = containerRef.current.scrollLeft;
-              
-              // If carousel isn't fully scrolled yet, prevent default and scroll carousel
-              if (currentScroll < maxCarouselScroll && e.deltaY > 0) {
-                e.preventDefault();
-                accumulatedDelta += e.deltaY;
-                containerRef.current.scrollLeft = Math.min(currentScroll + e.deltaY * 0.5, maxCarouselScroll);
-              }
-            }
-          };
-          
-          window.addEventListener('wheel', wheelHandler, { passive: false });
-          return () => window.removeEventListener('wheel', wheelHandler);
+        // If scrolling down and carousel isn't fully scrolled yet
+        if (e.deltaY > 0 && currentScroll < maxCarouselScroll) {
+          e.preventDefault();
+          // Increased multiplier from 0.5 to 2.0 for much faster, natural scrolling
+          const scrollAmount = e.deltaY * 2.0;
+          containerRef.current.scrollTo({
+            left: Math.min(currentScroll + scrollAmount, maxCarouselScroll),
+            behavior: 'auto' // Changed to 'auto' for instant response
+          });
+        }
+        // Allow scrolling back up or scrolling back in carousel
+        else if (e.deltaY < 0 && currentScroll > 0) {
+          e.preventDefault();
+          const scrollAmount = e.deltaY * 2.0;
+          containerRef.current.scrollTo({
+            left: Math.max(currentScroll + scrollAmount, 0),
+            behavior: 'auto'
+          });
         }
       }
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', checkIfAtBottom, { passive: true });
+    window.addEventListener('wheel', wheelHandler, { passive: false });
+    
+    return () => {
+      window.removeEventListener('scroll', checkIfAtBottom);
+      window.removeEventListener('wheel', wheelHandler);
+    };
   }, []);
 
   const scrollLeft = () => {
