@@ -39,7 +39,7 @@ export default function MovieCarousel() {
     const unsubscribe = scrollYProgress.on('change', (progress) => {
       if (containerRef.current) {
         const maxScroll = containerRef.current.scrollWidth - containerRef.current.clientWidth;
-        const scrollPosition = progress * maxScroll * 2; // Multiply by 2 for faster scroll
+        const scrollPosition = progress * maxScroll * 0.8; // Smooth scroll
         containerRef.current.scrollLeft = scrollPosition;
       }
     });
