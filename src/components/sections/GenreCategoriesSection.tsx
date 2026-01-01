@@ -12,14 +12,14 @@ import {
 } from 'lucide-react';
 
 const genres = [
-  { name: 'Action', icon: Swords, color: 'bg-red-500' },
-  { name: 'Comedy', icon: Laugh, color: 'bg-amber-500' },
-  { name: 'Drama', icon: Theater, color: 'bg-purple-500' },
-  { name: 'Horror', icon: Ghost, color: 'bg-slate-500' },
-  { name: 'Sci-Fi', icon: Rocket, color: 'bg-cyan-500' },
-  { name: 'Romance', icon: Heart, color: 'bg-rose-500' },
-  { name: 'Thriller', icon: Crosshair, color: 'bg-emerald-500' },
-  { name: 'Animation', icon: Sparkles, color: 'bg-violet-500' },
+  { name: 'Action', icon: Swords },
+  { name: 'Comedy', icon: Laugh },
+  { name: 'Drama', icon: Theater },
+  { name: 'Horror', icon: Ghost },
+  { name: 'Sci-Fi', icon: Rocket },
+  { name: 'Romance', icon: Heart },
+  { name: 'Thriller', icon: Crosshair },
+  { name: 'Animation', icon: Sparkles },
 ];
 
 export default function GenreCategoriesSection() {
@@ -30,7 +30,7 @@ export default function GenreCategoriesSection() {
   };
 
   return (
-    <section className="py-20 lg:py-28">
+    <section className="py-24 lg:py-32 bg-card/50">
       <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -39,15 +39,15 @@ export default function GenreCategoriesSection() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl lg:text-4xl font-bold mb-3 text-foreground">
+          <span className="text-primary text-sm font-medium tracking-wider uppercase mb-4 block">
+            Categories
+          </span>
+          <h2 className="text-4xl lg:text-5xl font-bold text-foreground">
             Browse by Genre
           </h2>
-          <p className="text-muted-foreground text-base max-w-md mx-auto">
-            Find the perfect movie for your mood
-          </p>
         </motion.div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-4xl mx-auto">
           {genres.map((genre, index) => (
             <motion.button
               key={genre.name}
@@ -55,15 +55,15 @@ export default function GenreCategoriesSection() {
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3, delay: index * 0.05 }}
               viewport={{ once: true }}
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => handleGenreClick(genre.name)}
-              className="flex flex-col items-center gap-3 p-5 rounded-xl bg-card border border-border hover:border-primary/50 transition-all duration-200 group"
+              className="flex flex-col items-center gap-4 p-6 rounded-2xl bg-card border border-border hover:border-primary/50 hover:bg-card/80 transition-all duration-300 group"
             >
-              <div className={`w-12 h-12 rounded-xl ${genre.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-200`}>
-                <genre.icon className="w-6 h-6 text-white" />
+              <div className="w-14 h-14 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center group-hover:bg-primary/20 transition-colors duration-300">
+                <genre.icon className="w-6 h-6 text-primary" />
               </div>
-              <span className="text-sm font-medium text-foreground">
+              <span className="text-base font-medium text-foreground">
                 {genre.name}
               </span>
             </motion.button>
