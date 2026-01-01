@@ -164,8 +164,8 @@ export default function TopNavigation() {
       </nav>
 
       {/* Mobile Bottom Navigation */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-card/98 backdrop-blur-xl border-t-2 border-primary/30 rounded-t-[2rem] shadow-[0_-8px_30px_-10px_rgba(0,0,0,0.5),0_-2px_20px_-5px_hsl(var(--primary)/0.5),0_-1px_8px_0px_hsl(var(--primary)/0.3)]">
-        <div className="flex items-center justify-around px-2 py-3">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-card/98 backdrop-blur-xl border-t-2 border-primary/30 rounded-t-[1.5rem] shadow-[0_-8px_30px_-10px_rgba(0,0,0,0.5),0_-2px_20px_-5px_hsl(var(--primary)/0.5),0_-1px_8px_0px_hsl(var(--primary)/0.3)]">
+        <div className="flex items-center justify-around px-1 py-2">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
@@ -174,16 +174,16 @@ export default function TopNavigation() {
               <NavLink
                 key={item.path}
                 to={item.path}
-                className="flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all relative group"
+                className="flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-lg transition-all relative group"
               >
                 <Icon 
-                  className={`w-6 h-6 transition-all ${
+                  className={`w-4 h-4 sm:w-5 sm:h-5 transition-all ${
                     isActive 
-                      ? 'text-primary drop-shadow-[0_0_8px_hsl(var(--primary))] scale-110' 
+                      ? 'text-primary drop-shadow-[0_0_8px_hsl(var(--primary))]' 
                       : 'text-muted-foreground group-hover:text-primary'
                   }`} 
                 />
-                <span className={`text-[10px] font-medium transition-colors ${
+                <span className={`text-[8px] sm:text-[9px] font-medium transition-colors ${
                   isActive ? 'text-primary' : 'text-muted-foreground'
                 }`}>
                   {item.label}
