@@ -183,12 +183,16 @@ export default function Movies() {
           </div>
         </motion.div>
 
-        {/* Movies Grid */}
+        {/* Content Grid */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
+          className={`grid gap-6 ${
+            isYouTubeMode 
+              ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' 
+              : 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
+          }`}
         >
           {filteredMovies.map((movie, index) => (
             <motion.div
@@ -198,7 +202,7 @@ export default function Movies() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className="group"
             >
-              <div className="relative h-[300px] mb-4">
+              <div className={`relative mb-4 ${isYouTubeMode ? 'aspect-video' : 'h-[300px]'}`}>
                 <MoviePoster3D 
                   posterUrl={movie.poster}
                   className="w-full h-full"
