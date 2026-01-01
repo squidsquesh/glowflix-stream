@@ -107,7 +107,7 @@ export default function TopNavigation() {
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 flex-shrink-0">
               <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-                Cinema Together
+                Insieme
               </h1>
             </Link>
 
