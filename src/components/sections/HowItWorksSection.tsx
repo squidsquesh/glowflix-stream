@@ -52,19 +52,18 @@ export default function HowItWorksSection() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.15 }}
               viewport={{ once: true }}
-              className="relative p-8 rounded-2xl bg-card border border-border hover:border-primary/30 transition-all duration-300 group"
+              whileHover={{ y: -4 }}
+              className="p-6 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all duration-300 group"
             >
-              {/* Step number badge */}
-              <div className="absolute -top-3 -right-3 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold shadow-lg">
-                {step.step}
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors duration-300">
+                  <step.icon className="w-5 h-5 text-primary" />
+                </div>
+                <span className="text-3xl font-bold text-primary">
+                  {step.step}
+                </span>
               </div>
 
-              {/* Icon */}
-              <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-5 group-hover:bg-primary/20 transition-colors duration-300">
-                <step.icon className="w-6 h-6 text-primary" />
-              </div>
-
-              {/* Content */}
               <h3 className="text-lg font-semibold mb-2 text-foreground">
                 {step.title}
               </h3>
