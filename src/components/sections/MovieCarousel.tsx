@@ -75,12 +75,12 @@ export default function MovieCarousel() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 className="text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+          <span className="text-primary text-sm font-medium tracking-wider uppercase mb-4 block">
             Featured Movies
+          </span>
+          <h2 className="text-4xl lg:text-5xl font-bold text-foreground">
+            Curated Collection
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Discover our curated collection of blockbuster movies and hidden gems, ready for you to watch with friends.
-          </p>
         </motion.div>
 
         {/* Movie Carousel */}
