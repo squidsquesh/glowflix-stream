@@ -6,25 +6,25 @@ const steps = [
     icon: Film,
     title: 'Choose Your Movie',
     description: 'Browse our collection of blockbusters and hidden gems.',
-    step: '1',
+    step: '01',
   },
   {
     icon: Users,
     title: 'Create or Join a Room',
     description: 'Watch solo or invite friends to your viewing room.',
-    step: '2',
+    step: '02',
   },
   {
     icon: Play,
     title: 'Enjoy Together',
     description: 'Sync playback and chat in real-time with friends.',
-    step: '3',
+    step: '03',
   },
 ];
 
 export default function HowItWorksSection() {
   return (
-    <section className="py-20 lg:py-28 relative">
+    <section className="py-24 lg:py-32 relative">
       <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -33,15 +33,15 @@ export default function HowItWorksSection() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl lg:text-4xl font-bold mb-3 text-foreground">
+          <span className="text-primary text-sm font-medium tracking-wider uppercase mb-4 block">
             How It Works
+          </span>
+          <h2 className="text-4xl lg:text-5xl font-bold text-foreground">
+            Three Simple Steps
           </h2>
-          <p className="text-muted-foreground text-base max-w-md mx-auto">
-            Start watching with friends in three simple steps
-          </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-6 lg:gap-10 max-w-4xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-8 lg:gap-12 max-w-5xl mx-auto">
           {steps.map((step, index) => (
             <motion.div
               key={step.title}
@@ -51,28 +51,25 @@ export default function HowItWorksSection() {
               viewport={{ once: true }}
               className="text-center group"
             >
+              {/* Step number */}
+              <span className="text-6xl font-bold text-primary/20 mb-4 block">
+                {step.step}
+              </span>
+
               {/* Icon container */}
-              <div className="relative inline-flex mb-6">
-                <div className="w-20 h-20 rounded-2xl bg-primary flex items-center justify-center group-hover:scale-105 transition-transform duration-300 golden-glow">
-                  <step.icon className="w-9 h-9 text-primary-foreground" />
+              <div className="inline-flex mb-6">
+                <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center group-hover:bg-primary/20 transition-colors duration-300">
+                  <step.icon className="w-7 h-7 text-primary" />
                 </div>
-                <span className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-background border-2 border-primary text-primary text-sm font-bold flex items-center justify-center">
-                  {step.step}
-                </span>
               </div>
 
               {/* Content */}
-              <h3 className="text-lg font-semibold mb-2 text-foreground">
+              <h3 className="text-xl font-semibold mb-3 text-foreground">
                 {step.title}
               </h3>
-              <p className="text-muted-foreground text-sm leading-relaxed max-w-[200px] mx-auto">
+              <p className="text-muted-foreground text-base leading-relaxed">
                 {step.description}
               </p>
-
-              {/* Connector line (except last) */}
-              {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-10 left-[calc(100%_-_1rem)] w-8 h-0.5 bg-border" />
-              )}
             </motion.div>
           ))}
         </div>
