@@ -1,7 +1,5 @@
 import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import MoviePoster3D from '@/components/3d/MoviePoster3D';
 
 // Import all generated posters
@@ -60,19 +58,6 @@ export default function MovieCarousel() {
     const walk = (x - startX) * 2;
     containerRef.current.scrollLeft = scrollLeftPos - walk;
   };
-
-  const scrollLeft = () => {
-    if (containerRef.current) {
-      containerRef.current.scrollBy({ left: -300, behavior: 'smooth' });
-    }
-  };
-
-  const scrollRight = () => {
-    if (containerRef.current) {
-      containerRef.current.scrollBy({ left: 300, behavior: 'smooth' });
-    }
-  };
-
   return (
     <div className="relative overflow-hidden">
       <motion.section 
@@ -97,28 +82,6 @@ export default function MovieCarousel() {
             Discover our curated collection of blockbuster movies and hidden gems, ready for you to watch with friends.
           </p>
         </motion.div>
-
-        {/* Carousel Controls */}
-        <div className="flex justify-end items-center mb-8">
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={scrollLeft}
-              className="border-primary/50 hover:bg-primary/10"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={scrollRight}
-              className="border-primary/50 hover:bg-primary/10"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </Button>
-          </div>
-        </div>
 
         {/* Movie Carousel */}
         <div
