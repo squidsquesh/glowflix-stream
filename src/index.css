@@ -94,22 +94,22 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-background text-foreground overflow-x-hidden;
   }
 
-  /* Custom scrollbar */
+  /* Hide scrollbar */
   ::-webkit-scrollbar {
-    width: 8px;
+    display: none;
   }
-  ::-webkit-scrollbar-track {
-    @apply bg-muted;
-  }
-  ::-webkit-scrollbar-thumb {
-    @apply bg-primary/50 rounded-full;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-primary;
+  
+  body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }
 
