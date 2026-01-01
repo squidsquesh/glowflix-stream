@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -24,6 +24,42 @@ const movies = [
 
 export default function MovieCarousel() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeftPos, setScrollLeftPos] = useState(0);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!containerRef.current) return;
+    setIsDragging(true);
+    setStartX(e.pageX - containerRef.current.offsetLeft);
+    setScrollLeftPos(containerRef.current.scrollLeft);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !containerRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - containerRef.current.offsetLeft;
+    const walk = (x - startX) * 2; // Multiply for faster scroll
+    containerRef.current.scrollLeft = scrollLeftPos - walk;
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (!containerRef.current) return;
+    setIsDragging(true);
+    setStartX(e.touches[0].pageX - containerRef.current.offsetLeft);
+    setScrollLeftPos(containerRef.current.scrollLeft);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging || !containerRef.current) return;
+    const x = e.touches[0].pageX - containerRef.current.offsetLeft;
+    const walk = (x - startX) * 2;
+    containerRef.current.scrollLeft = scrollLeftPos - walk;
+  };
 
   const scrollLeft = () => {
     if (containerRef.current) {
@@ -87,7 +123,14 @@ export default function MovieCarousel() {
         {/* Movie Carousel */}
         <div
           ref={containerRef}
-          className="flex gap-6 pb-4 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+          className={`flex gap-6 pb-4 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleMouseUp}
         >
           {movies.map((movie, index) => (
             <motion.div
