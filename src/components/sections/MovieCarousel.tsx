@@ -102,9 +102,9 @@ export default function MovieCarousel() {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
               viewport={{ once: true }}
-              className="min-w-[280px] md:min-w-[320px] group cursor-pointer"
+              className="min-w-[320px] group cursor-pointer"
             >
-              <div className="relative h-[400px] md:h-[450px] mb-4">
+              <div className="relative aspect-video mb-4">
                 <MoviePoster3D 
                   posterUrl={movie.poster}
                   className="w-full h-full"
