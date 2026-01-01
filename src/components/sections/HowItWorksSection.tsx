@@ -24,8 +24,11 @@ const steps = [
 
 export default function HowItWorksSection() {
   return (
-    <section className="py-24 lg:py-32 relative">
-      <div className="container mx-auto px-6">
+    <section className="py-24 lg:py-32 relative overflow-hidden">
+      {/* Background accent */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent pointer-events-none" />
+      
+      <div className="container mx-auto px-6 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -41,7 +44,7 @@ export default function HowItWorksSection() {
           </h2>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8 lg:gap-12 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto">
           {steps.map((step, index) => (
             <motion.div
               key={step.title}
@@ -49,25 +52,23 @@ export default function HowItWorksSection() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.15 }}
               viewport={{ once: true }}
-              className="text-center group"
+              className="relative p-8 rounded-2xl bg-card border border-border hover:border-primary/30 transition-all duration-300 group"
             >
-              {/* Step number */}
-              <span className="text-6xl font-bold text-primary/20 mb-4 block">
+              {/* Step number badge */}
+              <div className="absolute -top-3 -right-3 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold shadow-lg">
                 {step.step}
-              </span>
+              </div>
 
-              {/* Icon container */}
-              <div className="inline-flex mb-6">
-                <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center group-hover:bg-primary/20 transition-colors duration-300">
-                  <step.icon className="w-7 h-7 text-primary" />
-                </div>
+              {/* Icon */}
+              <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-5 group-hover:bg-primary/20 transition-colors duration-300">
+                <step.icon className="w-6 h-6 text-primary" />
               </div>
 
               {/* Content */}
-              <h3 className="text-xl font-semibold mb-3 text-foreground">
+              <h3 className="text-lg font-semibold mb-2 text-foreground">
                 {step.title}
               </h3>
-              <p className="text-muted-foreground text-base leading-relaxed">
+              <p className="text-muted-foreground text-sm leading-relaxed">
                 {step.description}
               </p>
             </motion.div>

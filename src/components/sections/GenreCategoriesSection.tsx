@@ -30,7 +30,7 @@ export default function GenreCategoriesSection() {
   };
 
   return (
-    <section className="py-24 lg:py-32 bg-card/50">
+    <section className="py-24 lg:py-32">
       <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -51,19 +51,22 @@ export default function GenreCategoriesSection() {
           {genres.map((genre, index) => (
             <motion.button
               key={genre.name}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3, delay: index * 0.05 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: index * 0.05 }}
               viewport={{ once: true }}
-              whileHover={{ scale: 1.03 }}
+              whileHover={{ y: -4 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => handleGenreClick(genre.name)}
-              className="flex flex-col items-center gap-4 p-6 rounded-2xl bg-card border border-border hover:border-primary/50 hover:bg-card/80 transition-all duration-300 group"
+              className="relative flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-primary/50 transition-all duration-300 group overflow-hidden"
             >
-              <div className="w-14 h-14 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center group-hover:bg-primary/20 transition-colors duration-300">
-                <genre.icon className="w-6 h-6 text-primary" />
+              {/* Hover glow effect */}
+              <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              
+              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors duration-300 relative z-10">
+                <genre.icon className="w-5 h-5 text-primary" />
               </div>
-              <span className="text-base font-medium text-foreground">
+              <span className="text-sm font-medium text-foreground relative z-10">
                 {genre.name}
               </span>
             </motion.button>
