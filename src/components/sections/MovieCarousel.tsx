@@ -87,7 +87,7 @@ export default function MovieCarousel() {
         {/* Movie Carousel */}
         <div
           ref={containerRef}
-          className="flex gap-6 pb-4 overflow-x-auto scrollbar-hide"
+          className="flex gap-6 pb-4 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
         >
           {movies.map((movie, index) => (
             <motion.div
