@@ -1,12 +1,8 @@
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, ArrowUp } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import MoviePoster3D from '@/components/3d/MoviePoster3D';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
 
 // Import all generated posters
 import poster1 from '@/assets/poster-1.jpg';
@@ -28,43 +24,6 @@ const movies = [
 
 export default function MovieCarousel() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  
-  // GSAP horizontal scroll when at bottom
-  useEffect(() => {
-    if (!containerRef.current || !sectionRef.current || !wrapperRef.current) return;
-
-    const container = containerRef.current;
-    
-    // Calculate the total scroll distance needed
-    const getScrollAmount = () => {
-      return -(container.scrollWidth - container.clientWidth);
-    };
-
-    // Create GSAP tween for horizontal movement
-    const tween = gsap.to(container, {
-      x: getScrollAmount,
-      ease: 'none',
-    });
-
-    // Create ScrollTrigger with fast, responsive scrubbing
-    const scrollTrigger = ScrollTrigger.create({
-      trigger: wrapperRef.current,
-      start: 'top top',
-      end: () => `+=${Math.abs(getScrollAmount())}`,
-      pin: true,
-      scrub: 0.3, // Fast and responsive - lower = snappier
-      anticipatePin: 1,
-      invalidateOnRefresh: true,
-      animation: tween,
-    });
-
-    return () => {
-      tween.kill();
-      scrollTrigger.kill();
-    };
-  }, []);
 
   const scrollLeft = () => {
     if (containerRef.current) {
@@ -78,19 +37,14 @@ export default function MovieCarousel() {
     }
   };
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   return (
-    <div ref={wrapperRef} className="relative overflow-hidden">
+    <div className="relative overflow-hidden">
       <motion.section 
-        ref={sectionRef}
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         viewport={{ once: true, margin: "-100px" }}
-        className="py-20 relative min-h-screen flex items-center"
+        className="py-20 relative"
       >
         <div className="container mx-auto px-6 w-full">
         <motion.div
@@ -109,7 +63,7 @@ export default function MovieCarousel() {
         </motion.div>
 
         {/* Carousel Controls */}
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-end items-center mb-8">
           <div className="flex gap-2">
             <Button
               variant="outline"
@@ -128,22 +82,12 @@ export default function MovieCarousel() {
               <ChevronRight className="w-4 h-4" />
             </Button>
           </div>
-          
-          <Button
-            variant="outline"
-            onClick={scrollToTop}
-            className="border-primary/50 hover:bg-primary/10"
-          >
-            <ArrowUp className="w-4 h-4 mr-2" />
-            Back to Top
-          </Button>
         </div>
 
         {/* Movie Carousel */}
         <div
           ref={containerRef}
-          className="flex gap-6 pb-4 will-change-transform"
-          style={{ width: 'fit-content' }}
+          className="flex gap-6 pb-4 overflow-x-auto scrollbar-hide"
         >
           {movies.map((movie, index) => (
             <motion.div
