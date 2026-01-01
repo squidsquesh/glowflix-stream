@@ -36,34 +36,32 @@ export default function MovieCarousel() {
     if (!containerRef.current || !sectionRef.current || !wrapperRef.current) return;
 
     const container = containerRef.current;
-    const section = sectionRef.current;
     
     // Calculate the total scroll distance needed
     const getScrollAmount = () => {
       return -(container.scrollWidth - container.clientWidth);
     };
 
-    // Create GSAP ScrollTrigger animation
+    // Create GSAP tween for horizontal movement
+    const tween = gsap.to(container, {
+      x: getScrollAmount,
+      ease: 'none',
+    });
+
+    // Create ScrollTrigger with fast, responsive scrubbing
     const scrollTrigger = ScrollTrigger.create({
       trigger: wrapperRef.current,
       start: 'top top',
       end: () => `+=${Math.abs(getScrollAmount())}`,
       pin: true,
-      scrub: 1, // Smooth scrubbing with 1 second lag for momentum
+      scrub: 0.3, // Fast and responsive - lower = snappier
       anticipatePin: 1,
       invalidateOnRefresh: true,
-      onUpdate: (self) => {
-        const progress = self.progress;
-        gsap.to(container, {
-          x: getScrollAmount() * progress,
-          duration: 0.5,
-          ease: 'power2.out',
-          overwrite: true
-        });
-      }
+      animation: tween,
     });
 
     return () => {
+      tween.kill();
       scrollTrigger.kill();
     };
   }, []);
